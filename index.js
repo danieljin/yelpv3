@@ -103,11 +103,11 @@ class Yelpv3 {
   }
 
   business(id, callback) {
-    return this.get(`business/${id}`, undefined, callback);
+    return this.get(`businesses/${id}`, undefined, callback);
   }
 
   reviews(id, callback) {
-    return this.get(`business/${id}/reviews`, undefined, callback);
+    return this.get(`businesses/${id}/reviews`, undefined, callback);
   }
 
   autocomplete(params, callback) {
