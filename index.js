@@ -54,12 +54,6 @@ class Yelpv3 {
           if (!err && response.statusCode == 200) {
             resolve(data);
           }
-          this.accessToken = null;
-          this.get(resource, params, cb).then((data) => {
-            resolve(data)
-          }).catch((err) => {
-            reject(err);
-          });
         });
       } else {
         this.getAccessToken().then((data) => {
@@ -103,11 +97,11 @@ class Yelpv3 {
   }
 
   business(id, callback) {
-    return this.get(`business/${id}`, undefined, callback);
+    return this.get(`businesses/${id}`, undefined, callback);
   }
 
   reviews(id, callback) {
-    return this.get(`business/${id}/reviews`, undefined, callback);
+    return this.get(`businesses/${id}/reviews`, undefined, callback);
   }
 
   autocomplete(params, callback) {
