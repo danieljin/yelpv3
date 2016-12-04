@@ -13,27 +13,32 @@ class Yelpv3 {
     }
 
     getAccessToken() {
-        return request({
-            method: 'POST',
-            uri: 'https://api.yelp.com/oauth2/token',
-            form: {
-                client_id: this.appId,
-                client_secret: this.appSecret,
-                grant_type: 'client_credentials'
-            }
-        }).then((response) => {
-            return JSON.parse(response).access_token;
-        });
+        if (this.accessToken) {
+            return Promise.resolve(this.accessToken);
+        } else {
+            return request({
+                method: 'POST',
+                uri: 'https://api.yelp.com/oauth2/token',
+                form: {
+                    client_id: this.appId,
+                    client_secret: this.appSecret,
+                    grant_type: 'client_credentials'
+                }
+            }).then((response) => {
+                this.accessToken = JSON.parse(response).access_token;
+                return this.accessToken;
+            });
+        }
     }
 
     get(resource, params) {
         params = (typeof params === 'undefined') ? {} : params;
 
-        if (this.accessToken) {
+        return this.getAccessToken().then((token) => {
             return request({
                 uri: baseUrl + resource + jsonToQueryString(params),
                 headers: {
-                    'Authorization': 'Bearer ' + this.accessToken
+                    'Authorization': 'Bearer ' + token
                 }
             }).then((response) => {
                 return response;
@@ -45,12 +50,7 @@ class Yelpv3 {
                 }
                 throw err;
             });
-        } else {
-            return this.getAccessToken().then((token) => {
-                this.accessToken = token;
-                return this.get(resource, params);
-            });
-        }
+        });
     }
 
     search(params) {

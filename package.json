@@ -1,6 +1,6 @@
 {
   "name": "yelpv3",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Library to query Yelp's v3 API",
   "main": "index.js",
   "scripts": {
