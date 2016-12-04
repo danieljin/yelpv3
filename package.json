@@ -1,6 +1,6 @@
 {
   "name": "yelpv3",
-  "version": "1.0.1",
+  "version": "1.2.0",
   "description": "Library to query Yelp's v3 API",
   "main": "index.js",
   "scripts": {
@@ -13,7 +13,8 @@
   "keywords": [
     "yelp",
     "v3",
-    "api"
+    "api",
+    "fusion"
   ],
   "author": "Daniel Jin",
   "license": "MIT",
@@ -22,6 +23,9 @@
   },
   "homepage": "https://github.com/danieljin/yelpv3#readme",
   "dependencies": {
-    "request": "^2.74.0"
+    "install": "^0.8.2",
+    "npm": "^4.0.3",
+    "request": "^2.74.0",
+    "request-promise": "^4.1.1"
   }
 }

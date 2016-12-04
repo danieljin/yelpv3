@@ -1,121 +1,92 @@
 "use strict";
 
-var request = require('request');
+var request = require('request-promise');
 
 const baseUrl = 'https://api.yelp.com/v3/';
 
 class Yelpv3 {
 
-  constructor(opts) {
-    this.appId = opts.app_id;
-    this.appSecret = opts.app_secret;
-    this.accessToken;
-  }
-
-  getAccessToken(cb) {
-    const promise = new Promise((resolve, reject) => {
-      request.post({
-        url: 'https://api.yelp.com/oauth2/token',
-        form: {
-          client_id: this.appId,
-          client_secret: this.appSecret,
-          grant_type: 'client_credentials'
-        }
-      }, (err, response, data) => {
-        if (!err && response.statusCode == 200) {
-          this.accessToken = JSON.parse(data).access_token;
-          resolve(data);
-        }
-        reject(err);
-      });
-    });
-
-    if (typeof cb === 'function') {
-      promise
-        .then((res) => cb(null, res))
-        .catch(cb);
-      return null;
+    constructor(opts) {
+        this.appId = opts.app_id;
+        this.appSecret = opts.app_secret;
+        this.accessToken = '';
     }
 
-    return promise;
-  }
-
-  get(resource, params, callback) {
-    params = (typeof params === 'undefined') ? {} : params;
-
-    const promise = new Promise((resolve, reject) => {
-      if (this.accessToken) {
-        request.get({
-          url: baseUrl + resource + jsonToQueryString(params),
-          headers: {
-            'Authorization': 'Bearer ' + this.accessToken
-          }
-        }, (err, response, data) => {
-          if (!err && response.statusCode == 200) {
-            resolve(data);
-          }
-        });
-      } else {
-        this.getAccessToken().then((data) => {
-          request.get({
-            url: baseUrl + resource + jsonToQueryString(params),
-            headers: {
-              'Authorization': 'Bearer ' + this.accessToken
+    getAccessToken() {
+        return request({
+            method: 'POST',
+            uri: 'https://api.yelp.com/oauth2/token',
+            form: {
+                client_id: this.appId,
+                client_secret: this.appSecret,
+                grant_type: 'client_credentials'
             }
-          }, (err, response, data) => {
-            if (!err && response.statusCode == 200) {
-              resolve(data);
-            }
-            reject(err);
-          });
-        }).catch((err) => {
-          reject(err);
+        }).then((response) => {
+            return JSON.parse(response).access_token;
         });
-      }
-    });
-
-    if (typeof callback === 'function') {
-      promise
-        .then((res) => callback(null, res))
-        .catch((err) => callback(err));
-      return null;
     }
 
-    return promise;
-  }
+    get(resource, params) {
+        params = (typeof params === 'undefined') ? {} : params;
 
-  search(params, callback) {
-    return this.get('businesses/search', params, callback);
-  }
+        if (this.accessToken) {
+            return request({
+                uri: baseUrl + resource + jsonToQueryString(params),
+                headers: {
+                    'Authorization': 'Bearer ' + this.accessToken
+                }
+            }).then((response) => {
+                return response;
+            }).catch((err) => {
+                // Handles expired access token
+                if (err.statusCode == 401) {
+                    this.accessToken = null;
+                    return this.get(resource, params);
+                }
+                throw err;
+            });
+        } else {
+            return this.getAccessToken().then((token) => {
+                this.accessToken = token;
+                return this.get(resource, params);
+            });
+        }
+    }
 
-  phoneSearch(params, callback) {
-    return this.get('businesses/search/phone', params, callback);
-  }
+    search(params) {
+        return this.get('businesses/search', params);
+    }
 
-  transactionSearch(transactionType, params, callback) {
-    return this.get(`transactions/${transactionType}/search`, params, callback);
-  }
+    phoneSearch(params) {
+        return this.get('businesses/search/phone', params);
+    }
 
-  business(id, callback) {
-    return this.get(`businesses/${id}`, undefined, callback);
-  }
+    transactionSearch(transactionType, params) {
+        return this.get(`transactions/${transactionType}/search`, params);
+    }
 
-  reviews(id, callback) {
-    return this.get(`businesses/${id}/reviews`, undefined, callback);
-  }
+    business(id) {
+        return this.get(`businesses/${id}`, undefined);
+    }
 
-  autocomplete(params, callback) {
-    return this.get('autocomplete', params, callback);
-  }
+    reviews(id) {
+        return this.get(`businesses/${id}/reviews`, undefined);
+    }
 
+    autocomplete(params) {
+        return this.get('autocomplete', params);
+    }
 }
 
 function jsonToQueryString(json) {
-  return '?' +
-    Object.keys(json).map(function(key) {
-      return encodeURIComponent(key) + '=' +
-        encodeURIComponent(json[key]);
-    }).join('&');
+    return '?' +
+        Object.keys(json).map(function(key) {
+            if (key === 'price') {
+                return key + '=' + json[key];
+            } else {
+                return encodeURIComponent(key) + '=' + encodeURIComponent(json[key]);
+            }
+        }).join('&');
 }
 
 module.exports = Yelpv3;

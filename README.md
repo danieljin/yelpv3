@@ -1,6 +1,6 @@
-# yelpv3
+# yelpv3 (aka Yelp Fusion)
 
-yelpv3 is a node module for accessing yelp's v3 API.
+yelpv3 is a node module for accessing yelp's v3 API (renamed Yelp Fusion).
   - Inspired by https://github.com/olalonde/node-yelp and https://github.com/elbuo8/4square
 
 ## Installation
@@ -9,17 +9,17 @@ npm install --save yelpv3
 ```
 
 ## Usage
-View [yelp's guide](https://github.com/Yelp/yelp-api-v3/blob/master/docs/tutorials/get-start-yelp-api-v3.md) for how to obtain an app id and app secret
+View [yelp's guide](https://www.yelp.com/developers/documentation/v3/get_started) for how to obtain an app id and app secret
 
 ```javascript
 var Yelp = require('yelpv3');
 
 var yelp = new Yelp({
-  app_id: '************',
-  app_secret: '************'
+  app_id: '*******',
+  app_secret: '*******'
 });
 
-// https://github.com/Yelp/yelp-api-v3/blob/master/docs/api-references/businesses-search.md
+// https://www.yelp.com/developers/documentation/v3/business_search
 yelp.search({term: 'food', location: '90210', limit: 10})
 .then(function (data) {
     console.log(data);
@@ -28,40 +28,32 @@ yelp.search({term: 'food', location: '90210', limit: 10})
     console.error(err);
 });
 
-// https://github.com/Yelp/yelp-api-v3/blob/master/docs/api-references/businesses-search-phone.md
+// https://www.yelp.com/developers/documentation/v3/business_search_phone
 yelp.phoneSearch({phone: '+14159083801'})
 .then(function (data) { console.log(data); })
 .catch(function (err) { console.error(err);});
 
-// https://github.com/Yelp/yelp-api-v3/blob/master/docs/api-references/transactions-search.md
+// https://www.yelp.com/developers/documentation/v3/transactions_search
 yelp.transactionSearch('delivery', {location: 'Boston'})
 .then(function (data) { console.log(data); })
 .catch(function (err) { console.error(err);});
 
-// https://github.com/Yelp/yelp-api-v3/blob/master/docs/api-references/businesses-id.md
+// https://www.yelp.com/developers/documentation/v3/business
 yelp.business('yuko-kitchen-los-angeles')
 .then(function (data) { console.log(data); })
 .catch(function (err) { console.error(err);});
 
-// https://github.com/Yelp/yelp-api-v3/blob/master/docs/api-references/businesses-id-reviews.md
+// https://www.yelp.com/developers/documentation/v3/business_reviews
 yelp.reviews('yuko-kitchen-los-angeles')
 .then(function (data) { console.log(data); })
 .catch(function (err) { console.error(err);});
 
-// https://github.com/Yelp/yelp-api-v3/blob/master/docs/api-references/autocomplete.md
-yelp.autocomplete({text: 'Pizz', latitude: 40.71,longitude: 74.00}, callback)
+// https://www.yelp.com/developers/documentation/v3/autocomplete
+yelp.autocomplete({text: 'Pizz', latitude: 40.71,longitude: 74.00})
 .then(function (data) { console.log(data); })
 .catch(function (err) { console.error(err);});
-
-// callbacks
-yelp.search({term: 'food', location: '90210', limit: 10}, function(err, data) {
-    if (err) {
-        return console.log(error);
-    }
-    console.log(data);
-});
 ```
-For additional information on parameter and response body data, check you the [yelp v3 documentation](https://github.com/Yelp/yelp-api-v3).
+For additional information on parameter and response body data, check you the [yelp v3 documentation](https://www.yelp.com/developers/documentation/v3).
 
 ## License
 MIT License
