@@ -1,5 +1,7 @@
 # yelpv3 (aka Yelp Fusion)
 
+[![API Testing](https://img.shields.io/badge/API%20Test-RapidAPI-blue.svg)](https://rapidapi.com/package/YelpAPI/functions?utm_source=YelpGithub&utm_medium=button&utm_content=Vender_GitHub)
+
 yelpv3 is a node module for accessing yelp's v3 API (renamed Yelp Fusion).
   - Inspired by https://github.com/olalonde/node-yelp and https://github.com/elbuo8/4square
 
