@@ -7,7 +7,7 @@ const baseUrl = 'https://api.yelp.com/v3/';
 class Yelpv3 {
 
     constructor(opts) {
-        this.apiKey = opts.apiKey;
+        this.api_key = opts.api_key;
     }
 
     get(resource, params) {
@@ -16,7 +16,7 @@ class Yelpv3 {
         return request({
                 uri: baseUrl + resource + jsonToQueryString(params),
                 headers: {
-                    'Authorization': 'Bearer ' + this.apiKey
+                    'Authorization': 'Bearer ' + this.api_key
                 }
             }).then((response) => {
                 return response;
