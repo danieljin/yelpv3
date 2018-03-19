@@ -15,8 +15,7 @@ View [yelp's guide](https://www.yelp.com/developers/documentation/v3/get_started
 var Yelp = require('yelpv3');
 
 var yelp = new Yelp({
-  app_id: '*******',
-  app_secret: '*******'
+  api_key: '*******'
 });
 
 // https://www.yelp.com/developers/documentation/v3/business_search
